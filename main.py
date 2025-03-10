@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# Sample Python code for youtube.playlists.list
-# See instructions for running these code samples locally:
-# https://developers.google.com/explorer-help/code-samples#python
-
 import os
 from google.auth.transport.requests import Request
 import google_auth_oauthlib.flow
@@ -82,11 +77,78 @@ def main():
             # print(f"URL is (https://www.youtube.com/watch?v={video_id})")
             urls.append(f"https://www.youtube.com/watch?v={video_id}")
 
-        # print(urls)
+        print(urls)
     except HttpError as e:
         print(f"An HTTP error {e.resp.status} occurred: {e.content}")
 
 
 
+#動画を再生するための関数．windowで開く．
+# import time
+# import webbrowser
+
+# def player(movie_url):
+#     # time.sleep(5)
+#     #&t=0は初めから再生するため
+#     url = movie_url+"&t=0"  # 完全なURLを指定
+#     browser_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+#     webbrowser.register('brave', None, webbrowser.BackgroundBrowser(browser_path))  # Braveを登録
+#     browser = webbrowser.get('brave')  # Braveを取得
+#     browser.open(url)  # URLを開く
+#     print(1)
+#     return 0
+
+
+# player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
+
+
+
+import yt_dlp
+import time
+import random
+
+def audio_make(url, output_name):
+    # カスタムUser-Agentを設定（YouTubeに自動スクリプトとバレにくくする）
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+
+    # yt-dlp のオプションを設定
+    ydl_opts = {
+        'format': 'bestaudio/best',  # 最高品質の音声を選択
+        # 'outtmpl': output_name + ".mp3",  # 保存ファイル名
+        'outtmpl': output_name,  # 保存ファイル名
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',  # ビットレート設定
+        }],
+        'nocheckcertificate': True,  # 証明書エラーを無視
+        'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
+        'quiet': True,  # 不要なログを抑える
+        'user_agent': user_agent, # カスタムUser-Agentを設定
+        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
+    }
+
+    # ランダムな遅延を入れてアクセスを分散（Bot対策）
+    # # delay = random.uniform(1.5, 3.0)
+    # print(f"Waiting for {delay:.2f} seconds before download...")
+    # time.sleep(delay)
+
+    # YouTubeの音声をダウンロード
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+    print("Download successful")
+    #保存したとき，ファイルは上書きされる．
+
+
+# YouTube動画のURLと保存先のファイル名（拡張子なし）を指定
+audio_make('https://www.youtube.com/watch?v=yRBKzeCkuyQ', './audio/audio')
+
+
 if __name__ == "__main__":
     main()
+    
+    
+from playsound3 import playsound
+import time
+# time.sleep(5)
+playsound("./audio/audio.mp3")

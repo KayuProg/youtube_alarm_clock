@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 import os
 from google.auth.transport.requests import Request
-import google_auth_oauthlib.flow
+import google_auth_oauthlib.flow # type: ignore
 import googleapiclient.discovery
 import googleapiclient.errors
 from google.oauth2.credentials import Credentials
 from googleapiclient.errors import HttpError
 
+#for audio make
+import yt_dlp
+import time
+import random
 
-SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
+#for audio play
+from playsound3 import playsound
+import time
 
-json_pass="./jsons/token.json"
-client_secrets_file = "./jsons/client.json"
+def get_urls():
+    SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 
-
-def main():
-    # Disable OAuthlib's HTTPS verification when running locally.
+    json_pass="./jsons/token.json"
+    client_secrets_file = "./jsons/client.json"
+     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -55,8 +61,6 @@ def main():
     #         print(f"🎵 {playlist['snippet']['title']} (ID: {playlist['id']})")
     
     
-    
-    
     #プレイリストidから中の情報取得
     urls=[]
     try:
@@ -77,35 +81,11 @@ def main():
             # print(f"URL is (https://www.youtube.com/watch?v={video_id})")
             urls.append(f"https://www.youtube.com/watch?v={video_id}")
 
-        print(urls)
+        print("This is urls : ",urls)
     except HttpError as e:
         print(f"An HTTP error {e.resp.status} occurred: {e.content}")
-
-
-
-#動画を再生するための関数．windowで開く．
-# import time
-# import webbrowser
-
-# def player(movie_url):
-#     # time.sleep(5)
-#     #&t=0は初めから再生するため
-#     url = movie_url+"&t=0"  # 完全なURLを指定
-#     browser_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
-#     webbrowser.register('brave', None, webbrowser.BackgroundBrowser(browser_path))  # Braveを登録
-#     browser = webbrowser.get('brave')  # Braveを取得
-#     browser.open(url)  # URLを開く
-#     print(1)
-#     return 0
-
-
-# player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
-
-
-
-import yt_dlp
-import time
-import random
+        
+    return urls
 
 def audio_make(url, output_name):
     # カスタムUser-Agentを設定（YouTubeに自動スクリプトとバレにくくする）
@@ -138,17 +118,56 @@ def audio_make(url, output_name):
         ydl.download([url])
     print("Download successful")
     #保存したとき，ファイルは上書きされる．
+    return 0
+
+def audio_play(url):
+    # time.sleep(5)
+    print("Audio playing")
+    playsound(url)#この方法だと音楽が流れているときに他の処理ができない．　非同期処理かthreding 使おうか．
+    print("Audio stop")
+    
+    #動画を再生するための関数．windowで開く．
+    # import time
+    # import webbrowser
+
+    # def player(movie_url):
+    #     # time.sleep(5)
+    #     #&t=0は初めから再生するため
+    #     url = movie_url+"&t=0"  # 完全なURLを指定
+    #     browser_path = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+    #     webbrowser.register('brave', None, webbrowser.BackgroundBrowser(browser_path))  # Braveを登録
+    #     browser = webbrowser.get('brave')  # Braveを取得
+    #     browser.open(url)  # URLを開く
+    #     print(1)
+    #     return 0
+
+    # player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
+
+    
+def main():
+    audio_make('https://www.youtube.com/watch?v=yRBKzeCkuyQ', './audio/audio')# YouTube動画のURLと保存先のファイル名を指定
+    audio_play("./audio/audio.mp3")
+    return 0
+   
 
 
-# YouTube動画のURLと保存先のファイル名（拡張子なし）を指定
-audio_make('https://www.youtube.com/watch?v=yRBKzeCkuyQ', './audio/audio')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
     main()
     
-    
-from playsound3 import playsound
-import time
-# time.sleep(5)
-playsound("./audio/audio.mp3")
+#fletでCupertinoDatePickerもいいんじゃない？
+

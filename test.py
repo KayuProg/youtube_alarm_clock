@@ -1,68 +1,90 @@
-# from pytubefix import YouTube
-# from moviepy import *
-# import os
-# # YouTube動画をロード
-# yt = YouTube("https://www.youtube.com/watch?v=ekr2nIex040")
+import TkEasyGUI as sg
+import datetime
 
-# # 最高品質のオーディオストリームを選択
-# audio_stream = yt.streams.filter(only_audio=True).first()
+def convert_time(h,m):
+    now = datetime.datetime.now()
+    now_h=now.hour
+    if now_h>12:
+        #12:00（お昼）以降だったら次の日を設定．
+        now=now+datetime.timedelta(days=1)
+        # print(now.day)
+    time = datetime.datetime(now.year, now.month, now.day, h, m)
+    return time
 
-# # オーディオを一時ファイルとしてダウンロード
-# temp_file = audio_stream.download()
+def set_awake_time():
+    input_font = ("Helvetica", 40)  # フォントサイズを大きく
+    layout=[
+        [sg.Text("明日何時に起きますか？",text_align="center", font=("Helvetica", 5),expand_x=True)],
+        #Input
+        [sg.Push(),
+        sg.Input("", key="hour",font=input_font,size=[5,5]), sg.Text("時", font=("Helvetica", 50)),
+        sg.Input("", key="minute",font=input_font,size=[5,5]), sg.Text("分", font=("Helvetica", 50)),
+        sg.Push(),],
+        #処理ボタン
+        [sg.Push(),
+        sg.Button("Set and Start",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]), 
+        sg.Push(),
+        sg.Button("'Re' set",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]),
+        sg.Push()],  # ボタン
+    ]
 
-# # MoviePyを使用してオーディオをMP3に変換
-# audio_clip = AudioFileClip(temp_file)
-# audio_clip.write_audiofile("test.mp3", codec="libmp3lame")
+    window=sg.Window("Input Wake up Time",layout=layout,size=(900,600),padding_y=100)#paddingで中の位置調整
 
-# # 一時ファイルを削除
-# os.remove(temp_file)
-
-# # YouTube動画のURLと保存先のファイル名（拡張子なし）を指定
-# # download_youtube_audio_as_mp3('https://www.youtube.com/watch?v=ekr2nIex040', 'apt')
-
-
-import yt_dlp
-import time
-import random
-
-def download_youtube_audio_as_mp3(url, output_name):
-    # カスタムUser-Agentを設定（YouTubeに自動スクリプトとバレにくくする）
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-
-    # yt-dlp のオプションを設定
-    ydl_opts = {
-        'format': 'bestaudio/best',  # 最高品質の音声を選択
-        # 'outtmpl': output_name + ".mp3",  # 保存ファイル名
-        'outtmpl': output_name,  # 保存ファイル名
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',  # ビットレート設定
-        }],
-        'nocheckcertificate': True,  # 証明書エラーを無視
-        'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
-        'quiet': True,  # 不要なログを抑える
-        'user_agent': user_agent, # カスタムUser-Agentを設定
-        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
-    }
-
-    # ランダムな遅延を入れてアクセスを分散（Bot対策）
-    # # delay = random.uniform(1.5, 3.0)
-    # print(f"Waiting for {delay:.2f} seconds before download...")
-    # time.sleep(delay)
-
-    # YouTubeの音声をダウンロード
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    print("Download successful")
-
-# YouTube動画のURLと保存先のファイル名（拡張子なし）を指定
-download_youtube_audio_as_mp3('https://www.youtube.com/watch?v=ekr2nIex040', './audio/audio')
+    #日付も設定しないとダメだよね．ｋ
+    while True:
+        event,value=window.read()
+        
+        if event == "Set and Start":
+            #書き込んでタイマー開始
+            h=int(value["hour"])
+            m=int(value["minute"])
+            #書き込むべき時間に変換     
+            time = convert_time(h,m)
+            print(time)
+            window.close()
+            break
+        
+        if event == "'Re' set":
+            #時刻を書き換えるだけ．
+            h=int(value["hour"])
+            m=int(value["minute"])
+            time = convert_time(h,m)
+            print(time)
+            window.close()
+            break
+            
+      
+        
+    window.close()
 
 
+set_awake_time()
 
-    
-from playsound3 import playsound
-import time
-# time.sleep(5)
-playsound("./apt.mp3")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

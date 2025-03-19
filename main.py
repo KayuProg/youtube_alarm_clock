@@ -60,7 +60,6 @@ def get_urls():
     #     for playlist in response.get("items", []):
     #         print(f"🎵 {playlist['snippet']['title']} (ID: {playlist['id']})")
     
-    
     #プレイリストidから中の情報取得
     urls=[]
     try:
@@ -76,12 +75,14 @@ def get_urls():
         # print(f"🎵 プレイリスト内の動画一覧（ID: PL8G4Ylahsmrrf6_uMWaQGNUBOf8COtlK5）:")
         for item in response.get("items", []):
             # print(item)
-            # video_title = item["snippet"]["title"]
+            video_title = item["snippet"]["title"]
             video_id = item["contentDetails"]["videoId"]
             # print(f"URL is (https://www.youtube.com/watch?v={video_id})")
-            urls.append(f"https://www.youtube.com/watch?v={video_id}")
+            url=f"https://www.youtube.com/watch?v={video_id}"
+            info={"title":video_title,"url":url}
+            urls.append(info)
 
-        print("This is urls : ",urls)
+        # print("This is urls : ",urls)
     except HttpError as e:
         print(f"An HTTP error {e.resp.status} occurred: {e.content}")
         
@@ -145,8 +146,9 @@ def audio_play(url):
 
     
 def main():
-    audio_make('https://www.youtube.com/watch?v=yRBKzeCkuyQ', './audio/audio')# YouTube動画のURLと保存先のファイル名を指定
-    audio_play("./audio/audio.mp3")
+    # audio_make('https://www.youtube.com/watch?v=yRBKzeCkuyQ', './audio/audio')# YouTube動画のURLと保存先のファイル名を指定
+    # audio_play("./audio/audio.mp3")
+    print(get_urls())
     return 0
    
 

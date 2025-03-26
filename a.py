@@ -1,135 +1,43 @@
 import TkEasyGUI as sg
 
-# window create
-window = sg.Window("UI test", layout=[
-    # テキスト
-    [sg.Text("TkEasyGUI Test:" ),sg.Text("TkEasyGUI Test:" )],
-    # テキスト入力
-    [sg.Input(
-        "input1", # テキスト
-        key="-input1-", # 要素の参照キー
-        enable_events=True # アクションがあれば実行する引数
-    )],
-    # 文字を隠すテキスト入力
-    [sg.Input(
-        "input2", # テキスト
-        key="-input2-", # 要素の参照キー
-        password_char="*" # 文字を隠す文字
-    )],
-    # 複数行入力テキスト
-    [sg.Multiline(
-        "multiine", # テキスト
-        key="-multiline-", # 要素の参照キー
-        enable_events=True, # アクションがあれば実行する引数
-        size=(40, 2) # 縦横サイズ
-    )],
-    # スライダー
-    [sg.Slider(
-        key="-slide-", # 要素の参照キー
-        enable_events=True, # アクションがあれば実行する引数
-        orientation="h", # 水平（horizontal）
-        range=(0, 100), # 範囲
-        default_value=50, # デフォルトの数値
-        expand_x=True # 水平方向に広げる
-    )],
-    # リストボックス、テキスト
-    [
-        sg.Listbox(
-            ["list1", "list2", "list3", "list4"], # リストボックスの値リスト
-            key="-listbox-", # 要素の参照キー
-            enable_events=True, # アクションがあれば実行する引数
-            select_mode=sg.LISTBOX_SELECT_MODE_EXTENDED # リストの選択モード 使われているのは`extended`(multiple, browse, extended, single)
-        ),
-        sg.Text(
-            "-", # ラベル
-            key="-listbox-text-" # 要素の参照キー
-    )],
-    # ラジオボタン
-    [
-        sg.Radio(
-            "Radio1", # ラベル
-            group_id="abc", # グループID
-            key="-radio1-", # 要素の参照キー
-            enable_events=True # アクションがあれば実行する引数
-        ),
-        sg.Radio(
-            "Radio2", # ラベル
-            group_id="abc", # グループID
-            key="-radio2-", # 要素の参照キー
-            default=True, # デフォルトの選択
-            enable_events=True # アクションがあれば実行する引数
-        )
-    ],
-    # チェックボックス
-    [
-        sg.Checkbox(
-            "Checkbox", # ラベル
-            key="-checkbox-", # 要素の参照キー
-            enable_events=True # アクションがあれば実行する引数
-        ), 
-        sg.Button(
-            "Change", # ラベル
-            key="-checkbox-button-" # 要素の参照キー
-        )
-    ],
-    # コンボボックス
-    [
-        sg.Combo(
-            ["combo1", "combo2", "combo3"], # コンボボックスの値リスト
-            default_value="combo1", # デフォルトの値
-            key="-combo-",  # 要素の参照キー
-            enable_events=True # アクションがあれば実行する引数
-        ), 
-        sg.Button(
-            "Change",  # ラベル
-            key="-combo-button-" # 要素の参照キー
-        )
-    ],
-    # ボタン
-    [sg.Button("Exit"), sg.Button("Maximize"), sg.Button("Minimize"), sg.Button("Hide"), sg.Button("UnHide")],
-], font=("Arial", 12), finalize=True, resizable=True)
-# event loop
+# define layout --- make 12 buttons
+layout = []
+for row in range(3):
+    layout.append([])
+    for col in range(4):
+        no = row*4+col+1
+        btn = sg.Button(str(no), key=f"-button{no}",
+                        size=(3, 1),
+                        etadata={"no": no}) # ボタンにメタデータを追加
+        layout[row].append(btn)
+# add close button
+layout.append([sg.HSeparator()]) # 横線
+layout.append([sg.Button("Close")])
 
-while True:
-    event, values = window.read()
-    print("#", event, values)
-    if event in (None, "Exit", sg.WINDOW_CLOSED):
+# 最終的なレイアウト
+# layout = [
+#     [sg.Button(str(1), key=f"-button1",size=(3, 1), metadata={"no": 1}), sg.Button(str(2), key=f"-button2",size=(3, 1), metadata={"no": 2}), sg.Button(str(3), key=f"-button3",size=(3, 1), metadata={"no": 3}), sg.Button(str(4), key=f"-button4",size=(3, 1), metadata={"no": 4})],
+#     [sg.Button(str(5), key=f"-button5",size=(3, 1), metadata={"no": 5}), sg.Button(str(6), key=f"-button6",size=(3, 1), metadata={"no": 6}), sg.Button(str(7), key=f"-button7",size=(3, 1), metadata={"no": 7}), sg.Button(str(8), key=f"-button8",size=(3, 1), metadata={"no": 8})],
+#     [sg.Button(str(9), key=f"-button9",size=(3, 1), metadata={"no": 9}), sg.Button(str(10), key=f"-button10",size=(3, 1), metadata={"no": 10}), sg.Button(str(11), key=f"-button11",size=(3, 1), metadata={"no": 11}), sg.Button(str(12), key=f"-button12",size=(3, 1), metadata={"no": 12})],
+#     [sg.HSeparator()],
+#     [sg.Button("Close")]
+# ]
+
+
+# make window
+window = sg.Window("Many buttons", layout)
+
+# イベントループ
+for event, values in window.event_iter():
+    # close button
+    if event == "Close":
         break
-    if event == "Maximize":
-        # ウィンドウの最大化
-        window.maximize()
-        
-    if event == "Minimize":
-        # ウィンドウの縮小化
-        window.minimize()
-        
-    if event == "Hide":
-        # ウィンドウを隠す
-        window.hide()
-        
-    if event == "UnHide":
-        # ウィンドウの非表示を解除
-        window.un_hide()
     
-    # listbox内のものを選択した場合
-    if event == "-listbox-":
-        # リストボックスの値を取得し文字列と結合
-        selected = " selected: " + "/".join(values["-listbox-"])
-        
-        # 結果をテキスト（-listbox-text-キー）要素に表示
-        window["-listbox-text-"].update(text=selected)
-    
-    # -checkbox-button- キーのボタンが押された場合
-    if event == "-checkbox-button-":
-        # チェックボックスの現在の状態を取得
-        b = window["-checkbox-"].get()
-        
-        # チェックボックスの状態を反転し、テキストを"Changed"に更新
-        window["-checkbox-"].update(value=(not b), text="Changed")
-    
-    # -combo-button- キーのボタンが押された場合
-    if event == "-combo-button-":
-        # コンボボックス（-combo-キー）の値を"combo3"に変更
-        window["-combo-"].update(value="combo3")
-        
-window.close()
+    # -button という文字で始まっているかどうかをチェック
+    # -button で始まっていれば True 
+    if event.startswith("-button"):
+        # アクジョンがあった event のメタデータの取得
+        no = window[event].metadata["no"]
+        sg.popup(f"You Pushed {no}")
+        # ボタンの無効化（押せなくする）
+        window[event].update(disabled=True)

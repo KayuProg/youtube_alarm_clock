@@ -1,5 +1,7 @@
 import TkEasyGUI as sg
 import datetime
+import time
+import threading
 
 def convert_time(h,m):
     now = datetime.datetime.now()
@@ -12,7 +14,21 @@ def convert_time(h,m):
 
     return time
 
-timer_flag=0
+
+def timer():
+    while 1:
+            
+        with open("awake_time.txt", "r", encoding="utf-8") as file:
+            first_line = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
+        print(first_line)
+        time.sleep(2)
+        
+    #timer_flag.txtを"0"に戻す．
+    # with open("timer_flag.txt", "r+", encoding="utf-8") as file:
+    #                 file.seek(0)
+    #                 file.write("0")
+    #                 file.truncate()  # 余計な部分を削除
+    return 0
 
 def set_awake_time():
     input_font = ("Helvetica", 40)  # フォントサイズを大きく
@@ -26,8 +42,8 @@ def set_awake_time():
         #処理ボタン
         [sg.Push(),
         sg.Button("Set and Start",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]), 
-        sg.Push(),
-        sg.Button("'Re' set",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]),
+        # sg.Push(),
+        # sg.Button("'Re' set",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]),
         sg.Push()],  # ボタン
         
         [sg.Push(),
@@ -99,58 +115,53 @@ def set_awake_time():
             time = convert_time(h,m)
             print("Set time to ",time)
             window["title"].update(f"{h}時{m}分にtimerをsetしました．",30)
-            if timer_flag==0:
+            
+            #実際に書き換える
+            with open("awake_time.txt", "r+", encoding="utf-8") as file:
+                file.seek(0)
+                file.write(str(time))
+                file.truncate()  # 余計な部分を削除
+
+                        
+            with open("timer_flag.txt", "r", encoding="utf-8") as file:
+                timer_flag = file.readline().strip()
+
+            if timer_flag=="0":
+                timer_thread=threading.Thread(target=timer)
                 #timerをスタートする関数．どうする？非同期関数？
-                timer_flag==1
-                pass
+                timer_thread.start()
+                print(timer_flag)
+                #timer_flagをの内容を"1"に書き換える．
+                with open("timer_flag.txt", "r+", encoding="utf-8") as file:
+                    file.seek(0)
+                    file.write("1")
+                    file.truncate()  # 余計な部分を削除
+
             # window.close()
             # break
         
         #こっちのボタンいらなくね？
-        if event == "'Re' set":
-            if value["hour"]=="" or value["minute"]=="":
-                continue
-            #時刻を書き換えるだけ．
-            h=int(value["hour"])
-            m=int(value["minute"])
-            time = convert_time(h,m)
-            print("Reset time to ",time)
-            window["title"].update(f"{h}時{m}分にtimerをsetしました．",30)
-            # window.close()
-            # break
+        # if event == "'Re' set":
+        #     if value["hour"]=="" or value["minute"]=="":
+        #         continue
+        #     #時刻を書き換えるだけ．
+        #     h=int(value["hour"])
+        #     m=int(value["minute"])
+        #     time = convert_time(h,m)
+        #     print("Reset time to ",time)
+        #     window["title"].update(f"{h}時{m}分にtimerをsetしました．",30)
+        #     # window.close()
+        #     # break
             
       
         
     window.close()
 
 
-set_awake_time()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    set_awake_time()
+    
 

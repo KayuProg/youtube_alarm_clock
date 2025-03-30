@@ -15,6 +15,7 @@ import random
 #for audio play
 from playsound3 import playsound
 import time
+import random
 
 def get_urls():
     SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
@@ -144,8 +145,25 @@ def audio_play(url):
 
     # player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
 
+def play_music():
+    while 1:
+        with open("timer_flag.txt", "r", encoding="utf-8") as file:
+            timer_flag = file.readline().strip()
+        if timer_flag=="1":
+            music_info=get_urls()
+            length=len(music_info)
+            num=random.randint(0,length-1)
+            url=music_info[num]["url"]
+            audio_make(url,"./audio/audio")
+            audio_play("./audio/audio.mp3")
+        elif timer_flag=="0":
+            break
+    # audio_play(url)
+
+    
 
 if __name__ == "__main__":
-    get_urls()    
+    # urls=get_urls()    
+    play_music()
 #fletでCupertinoDatePickerもいいんじゃない？
 

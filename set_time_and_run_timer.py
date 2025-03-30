@@ -2,6 +2,8 @@ import TkEasyGUI as sg
 import datetime
 import time
 import threading
+import play_music
+import sys
 
 def convert_time(h,m):
     now = datetime.datetime.now()
@@ -16,12 +18,18 @@ def convert_time(h,m):
 
 
 def timer():
+    now=datetime.datetime.now()
     while 1:
-            
         with open("awake_time.txt", "r", encoding="utf-8") as file:
-            first_line = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
-        print(first_line)
-        time.sleep(2)
+            ref = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
+        ref_converted=datetime.datetime.strptime(ref,"%Y-%m-%d %H:%M:%S")
+        print("ref is ",ref_converted)
+        if ref_converted<now:
+            print("アラームを流します")
+            play_music.play_music()
+        else:
+            print("まだ寝てていいよ")
+        time.sleep(1)
         
     #timer_flag.txtを"0"に戻す．
     # with open("timer_flag.txt", "r+", encoding="utf-8") as file:
@@ -42,8 +50,8 @@ def set_awake_time():
         #処理ボタン
         [sg.Push(),
         sg.Button("Set and Start",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]), 
-        # sg.Push(),
-        # sg.Button("'Re' set",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]),
+        sg.Push(),
+        sg.Button("Stop",expand_x=1,font=("Helvetica", 40),background_color=["#dddddd"]),
         sg.Push()],  # ボタン
         
         [sg.Push(),
@@ -79,25 +87,25 @@ def set_awake_time():
         
         if event == "6:00":
             window["hour"].update("6")
-            window["minute"].update("0")
+            window["minute"].update("00")
         elif event == "6:30":
             window["hour"].update("6")
             window["minute"].update("30")
         elif event == "7:00":
             window["hour"].update("7")
-            window["minute"].update("0")
+            window["minute"].update("00")
         elif event == "7:30":
             window["hour"].update("7")
             window["minute"].update("30")
         elif event == "8:00":
             window["hour"].update("8")
-            window["minute"].update("0")
+            window["minute"].update("00")
         elif event == "8:30":
             window["hour"].update("8")
-            window["minute"].update("3")
+            window["minute"].update("30")
         elif event == "9:00":
             window["hour"].update("9")
-            window["minute"].update("0")
+            window["minute"].update("00")
         elif event == "9:30":
             window["hour"].update("9")
             window["minute"].update("30")
@@ -127,7 +135,7 @@ def set_awake_time():
                 timer_flag = file.readline().strip()
 
             if timer_flag=="0":
-                timer_thread=threading.Thread(target=timer)
+                timer_thread=threading.Thread(target=timer,daemon=True)
                 #timerをスタートする関数．どうする？非同期関数？
                 timer_thread.start()
                 print(timer_flag)
@@ -140,18 +148,13 @@ def set_awake_time():
             # window.close()
             # break
         
-        #こっちのボタンいらなくね？
-        # if event == "'Re' set":
-        #     if value["hour"]=="" or value["minute"]=="":
-        #         continue
-        #     #時刻を書き換えるだけ．
-        #     h=int(value["hour"])
-        #     m=int(value["minute"])
-        #     time = convert_time(h,m)
-        #     print("Reset time to ",time)
-        #     window["title"].update(f"{h}時{m}分にtimerをsetしました．",30)
-        #     # window.close()
-        #     # break
+        if event == "Stop":
+            with open("timer_flag.txt", "r+", encoding="utf-8") as file:
+                    file.seek(0)
+                    file.write("0")
+                    file.truncate()
+            sys.exit()
+            break
             
       
         

@@ -1,6 +1,7 @@
-def main():
-    pass
+import set_time_and_run_timer
 
+def main():
+    set_time_and_run_timer.set_awake_time()
 
 
 

@@ -14,6 +14,7 @@ import random
 
 #for audio play
 from playsound3 import playsound
+import os
 import time
 import random
 
@@ -124,6 +125,7 @@ def audio_make(url, output_name):
 
 def audio_play(url):
     # time.sleep(5)
+    os.system("/usr/bin/mplayer -speed 1.1 -volume 70 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/audiomp3")
     print("Audio playing")
     playsound(url)#この方法だと音楽が流れているときに他の処理ができない．　非同期処理かthreding 使おうか．
     print("Audio stop")

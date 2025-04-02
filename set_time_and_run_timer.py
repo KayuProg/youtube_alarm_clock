@@ -3,7 +3,7 @@ import datetime
 import time
 import threading
 import play_music
-
+import sys
 import TkEasyGUI
 
 def convert_time(h,m):
@@ -20,6 +20,7 @@ def convert_time(h,m):
 
 def timer():
     now=datetime.datetime.now()
+   # play_music.play_music()
     while 1:
         with open("awake_time.txt", "r", encoding="utf-8") as file:
             ref = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
@@ -30,8 +31,9 @@ def timer():
             play_music.play_music()
         else:
             print("まだ寝てていいよ")
-        time.sleep(1)
-        
+            
+        time.sleep(3)
+    #play_music.play_music()
     #timer_flag.txtを"0"に戻す．
     # with open("timer_flag.txt", "r+", encoding="utf-8") as file:
     #                 file.seek(0)

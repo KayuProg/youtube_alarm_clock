@@ -6,6 +6,7 @@ import play_music
 import sys
 import TkEasyGUI
 
+
 def convert_time(h,m):
     now = datetime.datetime.now()
     now_h=now.hour
@@ -19,9 +20,9 @@ def convert_time(h,m):
 
 
 def timer():
-    now=datetime.datetime.now()
    # play_music.play_music()
     while 1:
+        now=datetime.datetime.now()
         with open("awake_time.txt", "r", encoding="utf-8") as file:
             ref = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
         ref_converted=datetime.datetime.strptime(ref,"%Y-%m-%d %H:%M:%S")

@@ -129,7 +129,7 @@ def audio_play(url):
     # time.sleep(5)
    
     print("Audio playing")
-    os.system(f"/usr/bin/mplayer -volume 90 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
+    os.system(f"/usr/bin/mplayer -volume 60 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
     #for windows
     print(url)
     # playsound(url)

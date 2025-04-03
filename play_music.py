@@ -9,12 +9,12 @@ from googleapiclient.errors import HttpError
 
 #for audio make
 import yt_dlp
-import time
 import random
+import threading
+import sys
 
 #for audio play
 from playsound3 import playsound
-import os
 import time
 import random
 
@@ -96,7 +96,7 @@ def audio_make(url, output_name):
 
     # yt-dlp のオプションを設定
     ydl_opts = {
-        'format': 'bestaudio/best',  # 最高品質の音声を選択
+        'format': 'worstaudio',  # 最高品質の音声を選択
         # 'outtmpl': output_name + ".mp3",  # 保存ファイル名
         'outtmpl': output_name,  # 保存ファイル名
         'postprocessors': [{
@@ -108,7 +108,9 @@ def audio_make(url, output_name):
         'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
         'quiet': True,  # 不要なログを抑える
         'user_agent': user_agent, # カスタムUser-Agentを設定
-        'ffmpeg_location': "/usr/local/bin/ffmpeg",
+        # 'ffmpeg_location': "/usr/local/bin/ffmpeg",
+        #for windows
+        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
     }
 
     # ランダムな遅延を入れてアクセスを分散（Bot対策）
@@ -127,7 +129,11 @@ def audio_play(url):
     # time.sleep(5)
    
     print("Audio playing")
-    os.system("/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/audio.mp3")
+    # os.system(f"/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
+    #for windows
+    print(url)
+    playsound(url)
+    
     print("Audio stop")
     
     #動画を再生するための関数．windowで開く．
@@ -146,20 +152,47 @@ def audio_play(url):
     #     return 0
 
     # player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
+    
+def play_and_make(music_info,length,playing_audio):
+    num=random.randint(0,length-1)
+    url=music_info[num]["url"]
 
+    if playing_audio==1:
+        play_thread=threading.Thread(target=audio_play,args=("audio/audio1.mp3",))
+        make_thread=threading.Thread(target=audio_make,args=(url,"./audio/audio2"))
+        return_num=2
+        
+    elif playing_audio==2:
+        play_thread=threading.Thread(target=audio_play,args=("audio/audio2.mp3",))
+        make_thread=threading.Thread(target=audio_make,args=(url,"./audio/audio1"))
+        return_num=1
+    # print("start play thread")
+    print("start play thread")
+
+    play_thread.start()
+    print("start make thread")
+    make_thread.start()
+
+    play_thread.join()
+    make_thread.join()
+    
+    return return_num
+    
+playing_audio=1
 def play_music():
+    global playing_audio
+    music_info=get_urls()
+    length=len(music_info)
     while 1:
         with open("timer_flag.txt", "r", encoding="utf-8") as file:
             timer_flag = file.readline().strip()
         if timer_flag=="1":
-            music_info=get_urls()
-            length=len(music_info)
-            num=random.randint(0,length-1)
-            url=music_info[num]["url"]
-            audio_make(url,"./audio/audio")
-            audio_play("./audio/audio.mp3")
+            playing_audio=play_and_make(music_info,length,playing_audio)
         elif timer_flag=="0":
+            sys.exit()
             break
+        
+        time.sleep(1)
     # audio_play(url)
 
     

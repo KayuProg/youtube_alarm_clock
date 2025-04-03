@@ -4,7 +4,6 @@ import time
 import threading
 import play_music
 import sys
-import TkEasyGUI
 
 
 def convert_time(h,m):

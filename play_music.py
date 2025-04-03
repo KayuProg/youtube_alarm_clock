@@ -108,9 +108,9 @@ def audio_make(url, output_name):
         'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
         'quiet': True,  # 不要なログを抑える
         'user_agent': user_agent, # カスタムUser-Agentを設定
-        # 'ffmpeg_location': "/usr/local/bin/ffmpeg",
+        'ffmpeg_location': "/usr/local/bin/ffmpeg",
         #for windows
-        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
+        # 'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
     }
 
     # ランダムな遅延を入れてアクセスを分散（Bot対策）
@@ -129,10 +129,10 @@ def audio_play(url):
     # time.sleep(5)
    
     print("Audio playing")
-    # os.system(f"/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
+    os.system(f"/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
     #for windows
     print(url)
-    playsound(url)
+    # playsound(url)
     
     print("Audio stop")
     
@@ -200,5 +200,4 @@ def play_music():
 if __name__ == "__main__":
     # urls=get_urls()    
     play_music()
-#fletでCupertinoDatePickerもいいんじゃない？
 

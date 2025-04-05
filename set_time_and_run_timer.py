@@ -4,6 +4,7 @@ import time
 import threading
 import play_music
 import sys
+import os
 
 
 def convert_time(h,m):
@@ -17,22 +18,25 @@ def convert_time(h,m):
 
     return time
 
-
+from playsound3 import playsound
 def timer():
    # play_music.play_music()
     while 1:
+        os.system(f"/usr/bin/mplayer -volume 100 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/don.mp3")
+        # playsound("./audio/don.mp3")
+
         now=datetime.datetime.now()
         with open("awake_time.txt", "r", encoding="utf-8") as file:
             ref = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
         ref_converted=datetime.datetime.strptime(ref,"%Y-%m-%d %H:%M:%S")
-        print("ref is ",ref_converted)
+        print("now is ",now," ref is ",ref_converted)
         if ref_converted<now:
             print("アラームを流します")
             play_music.play_music()
         else:
             print("まだ寝てていいよ")
             
-        time.sleep(3)
+        time.sleep(6)
     #play_music.play_music()
     #timer_flag.txtを"0"に戻す．
     # with open("timer_flag.txt", "r+", encoding="utf-8") as file:

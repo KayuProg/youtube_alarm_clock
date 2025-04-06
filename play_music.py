@@ -127,7 +127,7 @@ def audio_make(url, output_name):
 
 def audio_play(url):
     # time.sleep(5)
-   
+    os.system("amixer sset Master 100%+")
     print("Audio playing")
     os.system(f"/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
     #for windows

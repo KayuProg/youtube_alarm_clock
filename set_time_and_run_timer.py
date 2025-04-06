@@ -22,7 +22,7 @@ from playsound3 import playsound
 def timer():
    # play_music.play_music()
     while 1:
-        os.system(f"/usr/bin/mplayer -volume 100 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/don.mp3")
+        os.system(f"/usr/bin/mplayer -volume 10 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/don.mp3")
         # playsound("./audio/don.mp3")
 
         now=datetime.datetime.now()

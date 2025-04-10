@@ -22,12 +22,7 @@ from playsound3 import playsound
 def timer():
    # play_music.play_music()
     while 1:
-        from datetime import datetime
-
-        now = datetime.datetime.now()
-        print("現在時刻:", now.strftime("%Y-%m-%d %H:%M:%S"))
-
-        os.system(f"/usr/bin/mplayer -volume 50 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/nothing.mp3")
+        #os.system(f"/usr/bin/mplayer -volume 100 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/nothing.mp3")
         # playsound("./audio/don.mp3")
 
         now=datetime.datetime.now()
@@ -40,9 +35,9 @@ def timer():
             play_music.play_music()
         else:
             print("まだ寝てていいよ")
-            
+            play_music.play_music()
         time.sleep(60)
-    play_music.play_music()
+    
     #timer_flag.txtを"0"に戻す．
     # with open("timer_flag.txt", "r+", encoding="utf-8") as file:
     #                 file.seek(0)

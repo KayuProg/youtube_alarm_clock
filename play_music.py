@@ -109,6 +109,7 @@ def audio_make(url, output_name):
         'quiet': True,  # 不要なログを抑える
         'user_agent': user_agent, # カスタムUser-Agentを設定
         'ffmpeg_location': "/usr/local/bin/ffmpeg",
+
         #for windows
         # 'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
     }
@@ -167,7 +168,7 @@ def play_and_make(music_info,length,playing_audio):
         play_thread=threading.Thread(target=audio_play,args=("audio/audio2.mp3",))
         make_thread=threading.Thread(target=audio_make,args=(url,"./audio/audio1"))
         return_num=1
-    # print("start play thread")
+    print("start play thread")
     print("start play thread")
 
     play_thread.start()
@@ -183,7 +184,12 @@ playing_audio=1
 def play_music():
     global playing_audio
     music_info=get_urls()
+    #print(music_info)
     length=len(music_info)
+    
+    #for debug
+    play_and_make(music_info,length,playing_audio)
+    
     while 1:
         with open("timer_flag.txt", "r", encoding="utf-8") as file:
             timer_flag = file.readline().strip()

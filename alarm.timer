@@ -1,0 +1,11 @@
+[Unit]
+Description=Run youtube alarm
+After=network.target
+            
+[Timer]
+OnCalendar=*-*-* 22:00:00
+            
+            
+            
+[Install]
+WantedBy=timers.target

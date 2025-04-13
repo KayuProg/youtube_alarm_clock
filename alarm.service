@@ -1,0 +1,15 @@
+[Unit]
+Description = run youtube alarm
+After=graphical.target
+Wants=graphical.target
+            
+[Service]
+User=kayu
+Group=kayu
+Environment="DISPLAY=:0.0"
+#ExecStartPre=/usr/bin/printenv
+ExecStart=/home/kayu/Desktop/alarm.sh
+workingDirectory=/home/kayu/Desktop/youtube_alarm_clock
+            
+[Install]
+WantedBy=graphical.target

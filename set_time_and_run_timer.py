@@ -152,6 +152,8 @@ def set_awake_time():
                     file.write("1")
                     file.truncate()  # 余計な部分を削除
 
+
+
             # window.close()
             # break
         
@@ -163,7 +165,7 @@ def set_awake_time():
             sys.exit()
             break
             
-      
+   
         
     window.close()
 

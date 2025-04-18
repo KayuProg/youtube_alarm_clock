@@ -18,6 +18,9 @@ from playsound3 import playsound
 import time
 import random
 
+#for pop up message
+import TkEasyGUI as sg
+
 def get_urls():
     SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 
@@ -126,9 +129,10 @@ def audio_make(url, output_name):
     #保存したとき，ファイルは上書きされる．
     return 0
 
+
 def audio_play(url):
     # time.sleep(5)
-  
+        
     #os.system("amixer get Master >> /home/kayu/Desktop/run_audio_log.txt")
     print("Audio playing")
     os.system(f"/usr/bin/mplayer -volume 40 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")

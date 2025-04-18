@@ -35,7 +35,7 @@ def timer():
             play_music.play_music()
         else:
             print("まだ寝てていいよ")
-            #play_music.play_music()
+            play_music.play_music()
         time.sleep(60)
     
     #timer_flag.txtを"0"に戻す．

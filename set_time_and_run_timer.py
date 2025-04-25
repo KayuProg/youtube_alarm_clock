@@ -23,7 +23,7 @@ def timer():
    # play_music.play_music()
     while 1:
         #os.system(f"/usr/bin/mplayer -volume 100 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/nothing.mp3")
-        # playsound("./audio/don.mp3")
+        playsound("./audio/nothing.mp3")
 
         now=datetime.datetime.now()
         with open("awake_time.txt", "r", encoding="utf-8") as file:

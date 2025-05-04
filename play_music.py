@@ -160,7 +160,13 @@ def audio_play(url):
     # player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
     
 def play_and_make(music_info,length,playing_audio):
-    num=random.randint(0,length-1)
+    global music_num
+    num=random.randint(0,length-1)    
+    while music_num == num:
+        num=random.randint(0,length-1)
+    print(music_num," ",num)
+    music_num=num
+    
     url=music_info[num]["url"]
 
     if playing_audio==1:
@@ -185,6 +191,8 @@ def play_and_make(music_info,length,playing_audio):
     return return_num
     
 playing_audio=1
+music_num=None
+
 def play_music():
     global playing_audio
     music_info=get_urls()

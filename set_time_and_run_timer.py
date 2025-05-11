@@ -32,6 +32,13 @@ def timer():
         print("now is ",now," ref is ",ref_converted)
         if ref_converted<now:
             print("アラームを流します")
+            
+            #notice windowを次回表示できるようにする．
+            # with open("notice_window.txt", "r+", encoding="utf-8") as file:
+            #     file.seek(0)
+            #     file.write(str(0))
+            #     file.truncate()  # 余計な部分を削除
+            
             play_music.play_music()
         else:
             print("まだ寝てていいよ")

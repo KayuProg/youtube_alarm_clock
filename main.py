@@ -32,7 +32,7 @@ def caution_window():
 def main():
     with open("notice_window.txt", "r", encoding="utf-8") as file:
             windows_flag = file.readline().strip()
-    print(windows_flag/)
+    #print(windows_flag)
     #windows_flagが0の時にcaution window表示．
     if windows_flag == "0":        
         caution_window()

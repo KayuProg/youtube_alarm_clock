@@ -135,7 +135,7 @@ def audio_play(url):
         
     #os.system("amixer get Master >> /home/kayu/Desktop/run_audio_log.txt")
     print("Audio playing")
-    os.system(f"/usr/bin/mplayer -volume 60 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
+    os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/{url}")
     #for windows
     print(url)
     # playsound(url)
@@ -159,13 +159,22 @@ def audio_play(url):
 
     # player("https://www.youtube.com/watch?v=TdeYkT7DEJQ")
     
+    
+played_music_list=[]
+
 def play_and_make(music_info,length,playing_audio):
-    global music_num
+    
+    global played_music_list
+    if len(played_music_list)==length:
+        played_music_list.clear()
+        print("played_music_list is cleared")
+        
     num=random.randint(0,length-1)    
-    while music_num == num:
+
+    while num in played_music_list:
         num=random.randint(0,length-1)
-    print(music_num," ",num)
-    music_num=num
+    played_music_list.append(num)
+ 
     
     url=music_info[num]["url"]
 
@@ -191,7 +200,6 @@ def play_and_make(music_info,length,playing_audio):
     return return_num
     
 playing_audio=1
-music_num=None
 
 def play_music():
     global playing_audio

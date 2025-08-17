@@ -30,6 +30,7 @@ based on the now inactive youtube-dlc.
     -   Post-processing Options
     -   SponsorBlock Options
     -   Extractor Options
+    -   Preset Aliases
 -   CONFIGURATION
     -   Configuration file encoding
     -   Authentication with netrc
@@ -416,8 +417,8 @@ General Options:
     --no-flat-playlist              Fully extract the videos of a playlist
                                     (default)
     --live-from-start               Download livestreams from the start.
-                                    Currently only supported for YouTube
-                                    (Experimental)
+                                    Currently experimental and only supported
+                                    for YouTube and Twitch
     --no-live-from-start            Download livestreams from the current time
                                     (default)
     --wait-for-video MIN[-MAX]      Wait for scheduled streams to become
@@ -443,17 +444,23 @@ General Options:
                                     an alias starts with a dash "-", it is
                                     prefixed with "--". Arguments are parsed
                                     according to the Python string formatting
-                                    mini-language. E.g. --alias get-audio,-X
-                                    "-S=aext:{0},abr -x --audio-format {0}"
-                                    creates options "--get-audio" and "-X" that
-                                    takes an argument (ARG0) and expands to
-                                    "-S=aext:ARG0,abr -x --audio-format ARG0".
-                                    All defined aliases are listed in the --help
+                                    mini-language. E.g. --alias get-audio,-X "-S
+                                    aext:{0},abr -x --audio-format {0}" creates
+                                    options "--get-audio" and "-X" that takes an
+                                    argument (ARG0) and expands to "-S
+                                    aext:ARG0,abr -x --audio-format ARG0". All
+                                    defined aliases are listed in the --help
                                     output. Alias options can trigger more
                                     aliases; so be careful to avoid defining
                                     recursive options. As a safety measure, each
                                     alias may be triggered a maximum of 100
                                     times. This option can be used multiple times
+    -t, --preset-alias PRESET       Applies a predefined set of options. e.g.
+                                    --preset-alias mp3. The following presets
+                                    are available: mp3, aac, mp4, mkv, sleep.
+                                    See the "Preset Aliases" section at the end
+                                    for more info. This option can be used
+                                    multiple times
 
 Network Options:
 
@@ -1180,6 +1187,28 @@ Extractor Options:
                                     See "EXTRACTOR ARGUMENTS" for details. You
                                     can use this option multiple times to give
                                     arguments for different extractors
+
+Preset Aliases:
+
+Predefined aliases for convenience and ease of use. Note that future
+versions of yt-dlp may add or adjust presets, but the existing preset
+names will not be changed or removed
+
+    -t mp3                          -f 'ba[acodec^=mp3]/ba/b' -x --audio-format
+                                    mp3
+
+    -t aac                          -f
+                                    'ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b'
+                                    -x --audio-format aac
+
+    -t mp4                          --merge-output-format mp4 --remux-video mp4
+                                    -S vcodec:h264,lang,quality,res,fps,hdr:12,a
+                                    codec:aac
+
+    -t mkv                          --merge-output-format mkv --remux-video mkv
+
+    -t sleep                        --sleep-subtitles 5 --sleep-requests 0.75
+                                    --sleep-interval 10 --max-sleep-interval 20
 
 CONFIGURATION
 
@@ -2178,17 +2207,20 @@ youtube
 -   lang: Prefer translated metadata (title, description etc) of this
     language code (case-sensitive). By default, the video primary
     language metadata is preferred, with a fallback to en translated.
-    See youtube.py for list of supported content language codes
+    See youtube/_base.py for the list of supported content language
+    codes
 -   skip: One or more of hls, dash or translated_subs to skip extraction
     of the m3u8 manifests, dash manifests and auto-translated subtitles
     respectively
 -   player_client: Clients to extract video data from. The currently
     available clients are web, web_safari, web_embedded, web_music,
-    web_creator, mweb, ios, android, android_vr, tv and tv_embedded. By
-    default, tv,ios,web is used, or tv,web is used when authenticating
-    with cookies. The web_music client is added for music.youtube.com
-    URLs when logged-in cookies are used. The tv_embedded and
-    web_creator clients are added for age-restricted videos if account
+    web_creator, mweb, ios, android, android_vr, tv, tv_simply and
+    tv_embedded. By default, tv,ios,web is used, or tv,web is used when
+    authenticating with cookies. The web_music client is added for
+    music.youtube.com URLs when logged-in cookies are used. The
+    web_embedded client is added for age-restricted videos but only
+    works if the video is embeddable. The tv_embedded and web_creator
+    clients are added for age-restricted videos if account
     age-verification is required. Some clients, such as web and
     web_music, require a po_token for their formats to be downloadable.
     Some clients, such as web_creator, will only work with
@@ -2198,12 +2230,18 @@ youtube
     exclude it, e.g. youtube:player_client=default,-ios
 -   player_skip: Skip some network requests that are generally needed
     for robust extraction. One or more of configs (skip client configs),
-    webpage (skip initial webpage), js (skip js player). While these
-    options can help reduce the number of requests needed or avoid some
-    rate-limiting, they could cause some issues. See #860 for more
-    details
+    webpage (skip initial webpage), js (skip js player), initial_data
+    (skip initial data/next ep request). While these options can help
+    reduce the number of requests needed or avoid some rate-limiting,
+    they could cause issues such as missing formats or metadata. See
+    #860 and #12826 for more details
 -   player_params: YouTube player parameters to use for player requests.
     Will overwrite any default ones set by yt-dlp.
+-   player_js_variant: The player javascript variant to use for
+    signature and nsig deciphering. The known variants are: main, tce,
+    tv, tv_es6, phone, tablet. Only main is recommended as a possible
+    workaround; the others are for debugging purposes. The default is to
+    use what is prescribed by the site, and can be selected with actual
 -   comment_sort: top or new (default) - choose comment sorting mode (on
     YouTube's side)
 -   max_comments: Limit the amount of comments to gather.
@@ -2236,13 +2274,20 @@ youtube
 -   po_token: Proof of Origin (PO) Token(s) to use. Comma seperated list
     of PO Tokens in the format CLIENT.CONTEXT+PO_TOKEN, e.g.
     youtube:po_token=web.gvs+XXX,web.player=XXX,web_safari.gvs+YYY.
-    Context can be either gvs (Google Video Server URLs) or player
-    (Innertube player request)
--   player_js_variant: The player javascript variant to use for
-    signature and nsig deciphering. The known variants are: main, tce,
-    tv, tv_es6, phone, tablet. Only main is recommended as a possible
-    workaround; the others are for debugging purposes. The default is to
-    use what is prescribed by the site, and can be selected with actual
+    Context can be any of gvs (Google Video Server URLs), player
+    (Innertube player request) or subs (Subtitles)
+-   pot_trace: Enable debug logging for PO Token fetching. Either true
+    or false (default)
+-   fetch_pot: Policy to use for fetching a PO Token from providers. One
+    of always (always try fetch a PO Token regardless if the client
+    requires one for the given context), never (never fetch a PO Token),
+    or auto (default; only fetch a PO Token if the client requires one
+    for the given context)
+
+youtubepot-webpo
+
+-   bind_to_visitor_id: Whether to use the Visitor ID instead of Visitor
+    Data for caching WebPO tokens. Either true (default) or false
 
 youtubetab (YouTube playlists, channels, feeds, etc.)
 
@@ -2287,12 +2332,6 @@ vikichannel
 
 -   video_types: Types of videos to download - one or more of episodes,
     movies, clips, trailers
-
-niconico
-
--   segment_duration: Segment duration in milliseconds for HLS-DMC
-    formats. Use it at your own risk since this feature may result in
-    your account termination.
 
 youtubewebarchive
 
@@ -2735,8 +2774,8 @@ New features
 -   Merged with animelover1984/youtube-dl: You get most of the features
     and improvements from animelover1984/youtube-dl including
     --write-comments, BiliBiliSearch, BilibiliChannel, Embedding
-    thumbnail in mp4/ogg/opus, playlist infojson etc. Note that NicoNico
-    livestreams are not available. See #31 for details.
+    thumbnail in mp4/ogg/opus, playlist infojson etc. See #31 for
+    details.
 
 -   YouTube improvements:
 

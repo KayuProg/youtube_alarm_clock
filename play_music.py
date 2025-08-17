@@ -111,10 +111,10 @@ def audio_make(url, output_name):
         'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
         'quiet': True,  # 不要なログを抑える
         'user_agent': user_agent, # カスタムUser-Agentを設定
-        # 'ffmpeg_location': "/usr/local/bin/ffmpeg",
+        'ffmpeg_location': "/usr/local/bin/ffmpeg",
 
         #for windows
-        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
+        # 'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
     }
 
     # ランダムな遅延を入れてアクセスを分散（Bot対策）

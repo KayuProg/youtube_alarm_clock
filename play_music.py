@@ -99,7 +99,7 @@ def audio_make(url, output_name):
 
     # yt-dlp のオプションを設定
     ydl_opts = {
-        'format': 'worstaudio',  # 最高品質の音声を選択
+        'format': 'bestaudio/best',  # 最高品質の音声を選択
         # 'outtmpl': output_name + ".mp3",  # 保存ファイル名
         'outtmpl': output_name,  # 保存ファイル名
         'postprocessors': [{
@@ -111,10 +111,10 @@ def audio_make(url, output_name):
         'noplaylist': True,  # プレイリスト全体のダウンロードを防ぐ
         'quiet': True,  # 不要なログを抑える
         'user_agent': user_agent, # カスタムUser-Agentを設定
-        'ffmpeg_location': "/usr/local/bin/ffmpeg",
+        # 'ffmpeg_location': "/usr/local/bin/ffmpeg",
 
         #for windows
-        # 'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
+        'ffmpeg_location': r'C:\Program Files\ffmpeg-master-latest-win64-gpl-shared\ffmpeg-master-latest-win64-gpl-shared\bin',
     }
 
     # ランダムな遅延を入れてアクセスを分散（Bot対策）

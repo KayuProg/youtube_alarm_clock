@@ -130,7 +130,7 @@ Fully extract the videos of a playlist (default)
 .TP
 --live-from-start
 Download livestreams from the start.
-Currently only supported for YouTube (Experimental)
+Currently experimental and only supported for YouTube and Twitch
 .TP
 --no-live-from-start
 Download livestreams from the current time (default)
@@ -170,14 +170,22 @@ Unless an alias starts with a dash \[dq]-\[dq], it is prefixed with
 Arguments are parsed according to the Python string formatting
 mini-language.
 E.g.
---alias get-audio,-X \[dq]-S=aext:{0},abr -x --audio-format {0}\[dq]
+--alias get-audio,-X \[dq]-S aext:{0},abr -x --audio-format {0}\[dq]
 creates options \[dq]--get-audio\[dq] and \[dq]-X\[dq] that takes an
-argument (ARG0) and expands to \[dq]-S=aext:ARG0,abr -x --audio-format
+argument (ARG0) and expands to \[dq]-S aext:ARG0,abr -x --audio-format
 ARG0\[dq].
 All defined aliases are listed in the --help output.
 Alias options can trigger more aliases; so be careful to avoid defining
 recursive options.
 As a safety measure, each alias may be triggered a maximum of 100 times.
+This option can be used multiple times
+.TP
+-t, --preset-alias \f[I]PRESET\f[R]
+Applies a predefined set of options.
+e.g.
+--preset-alias mp3.
+The following presets are available: mp3, aac, mp4, mkv, sleep.
+See the \[dq]Preset Aliases\[dq] section at the end for more info.
 This option can be used multiple times
 .SS Network Options:
 .TP
@@ -1176,6 +1184,29 @@ Pass ARGS arguments to the IE_KEY extractor.
 See \[dq]EXTRACTOR ARGUMENTS\[dq] for details.
 You can use this option multiple times to give arguments for different
 extractors
+.SS Preset Aliases:
+.PP
+Predefined aliases for convenience and ease of use.
+Note that future versions of yt-dlp may add or adjust presets, but the
+existing preset names will not be changed or removed
+.TP
+-t \f[I]mp3\f[R]
+-f \[aq]ba[acodec\[ha]=mp3]/ba/b\[aq] -x --audio-format mp3
+.TP
+-t \f[I]aac\f[R]
+-f \[aq]ba[acodec\[ha]=aac]/ba[acodec\[ha]=mp4a.40.]/ba/b\[aq] -x
+--audio-format aac
+.TP
+-t \f[I]mp4\f[R]
+--merge-output-format mp4 --remux-video mp4 -S
+vcodec:h264,lang,quality,res,fps,hdr:12,a codec:aac
+.TP
+-t \f[I]mkv\f[R]
+--merge-output-format mkv --remux-video mkv
+.TP
+-t \f[I]sleep\f[R]
+--sleep-subtitles 5 --sleep-requests 0.75 --sleep-interval 10
+--max-sleep-interval 20
 .SH CONFIGURATION
 .PP
 You can configure yt-dlp by placing any supported command line option in
@@ -2623,8 +2654,8 @@ The following extractors use this feature:
 By default, the video primary language metadata is preferred, with a
 fallback to \f[V]en\f[R] translated.
 See
-youtube.py (https://github.com/yt-dlp/yt-dlp/blob/c26f9b991a0681fd3ea548d535919cec1fbbd430/yt_dlp/extractor/youtube.py#L381-L390)
-for list of supported content language codes
+youtube/_base.py (https://github.com/yt-dlp/yt-dlp/blob/415b4c9f955b1a0391204bd24a7132590e7b3bdb/yt_dlp/extractor/youtube/_base.py#L402-L409)
+for the list of supported content language codes
 .IP \[bu] 2
 \f[V]skip\f[R]: One or more of \f[V]hls\f[R], \f[V]dash\f[R] or
 \f[V]translated_subs\f[R] to skip extraction of the m3u8 manifests, dash
@@ -2636,11 +2667,13 @@ respectively
 The currently available clients are \f[V]web\f[R], \f[V]web_safari\f[R],
 \f[V]web_embedded\f[R], \f[V]web_music\f[R], \f[V]web_creator\f[R],
 \f[V]mweb\f[R], \f[V]ios\f[R], \f[V]android\f[R], \f[V]android_vr\f[R],
-\f[V]tv\f[R] and \f[V]tv_embedded\f[R].
+\f[V]tv\f[R], \f[V]tv_simply\f[R] and \f[V]tv_embedded\f[R].
 By default, \f[V]tv,ios,web\f[R] is used, or \f[V]tv,web\f[R] is used
 when authenticating with cookies.
 The \f[V]web_music\f[R] client is added for \f[V]music.youtube.com\f[R]
 URLs when logged-in cookies are used.
+The \f[V]web_embedded\f[R] client is added for age-restricted videos but
+only works if the video is embeddable.
 The \f[V]tv_embedded\f[R] and \f[V]web_creator\f[R] clients are added
 for age-restricted videos if account age-verification is required.
 Some clients, such as \f[V]web\f[R] and \f[V]web_music\f[R], require a
@@ -2656,14 +2689,26 @@ You can prefix a client with \f[V]-\f[R] to exclude it, e.g.
 \f[V]player_skip\f[R]: Skip some network requests that are generally
 needed for robust extraction.
 One or more of \f[V]configs\f[R] (skip client configs),
-\f[V]webpage\f[R] (skip initial webpage), \f[V]js\f[R] (skip js player).
+\f[V]webpage\f[R] (skip initial webpage), \f[V]js\f[R] (skip js player),
+\f[V]initial_data\f[R] (skip initial data/next ep request).
 While these options can help reduce the number of requests needed or
-avoid some rate-limiting, they could cause some issues.
-See #860 (https://github.com/yt-dlp/yt-dlp/pull/860) for more details
+avoid some rate-limiting, they could cause issues such as missing
+formats or metadata.
+See #860 (https://github.com/yt-dlp/yt-dlp/pull/860) and
+#12826 (https://github.com/yt-dlp/yt-dlp/issues/12826) for more details
 .IP \[bu] 2
 \f[V]player_params\f[R]: YouTube player parameters to use for player
 requests.
 Will overwrite any default ones set by yt-dlp.
+.IP \[bu] 2
+\f[V]player_js_variant\f[R]: The player javascript variant to use for
+signature and nsig deciphering.
+The known variants are: \f[V]main\f[R], \f[V]tce\f[R], \f[V]tv\f[R],
+\f[V]tv_es6\f[R], \f[V]phone\f[R], \f[V]tablet\f[R].
+Only \f[V]main\f[R] is recommended as a possible workaround; the others
+are for debugging purposes.
+The default is to use what is prescribed by the site, and can be
+selected with \f[V]actual\f[R]
 .IP \[bu] 2
 \f[V]comment_sort\f[R]: \f[V]top\f[R] or \f[V]new\f[R] (default) -
 choose comment sorting mode (on YouTube\[aq]s side)
@@ -2717,17 +2762,24 @@ If a session from a browser is wanted, you should pass cookies instead
 Comma seperated list of PO Tokens in the format
 \f[V]CLIENT.CONTEXT+PO_TOKEN\f[R], e.g.
 \f[V]youtube:po_token=web.gvs+XXX,web.player=XXX,web_safari.gvs+YYY\f[R].
-Context can be either \f[V]gvs\f[R] (Google Video Server URLs) or
-\f[V]player\f[R] (Innertube player request)
+Context can be any of \f[V]gvs\f[R] (Google Video Server URLs),
+\f[V]player\f[R] (Innertube player request) or \f[V]subs\f[R]
+(Subtitles)
 .IP \[bu] 2
-\f[V]player_js_variant\f[R]: The player javascript variant to use for
-signature and nsig deciphering.
-The known variants are: \f[V]main\f[R], \f[V]tce\f[R], \f[V]tv\f[R],
-\f[V]tv_es6\f[R], \f[V]phone\f[R], \f[V]tablet\f[R].
-Only \f[V]main\f[R] is recommended as a possible workaround; the others
-are for debugging purposes.
-The default is to use what is prescribed by the site, and can be
-selected with \f[V]actual\f[R]
+\f[V]pot_trace\f[R]: Enable debug logging for PO Token fetching.
+Either \f[V]true\f[R] or \f[V]false\f[R] (default)
+.IP \[bu] 2
+\f[V]fetch_pot\f[R]: Policy to use for fetching a PO Token from
+providers.
+One of \f[V]always\f[R] (always try fetch a PO Token regardless if the
+client requires one for the given context), \f[V]never\f[R] (never fetch
+a PO Token), or \f[V]auto\f[R] (default; only fetch a PO Token if the
+client requires one for the given context)
+.SS youtubepot-webpo
+.IP \[bu] 2
+\f[V]bind_to_visitor_id\f[R]: Whether to use the Visitor ID instead of
+Visitor Data for caching WebPO tokens.
+Either \f[V]true\f[R] (default) or \f[V]false\f[R]
 .SS youtubetab (YouTube playlists, channels, feeds, etc.)
 .IP \[bu] 2
 \f[V]skip\f[R]: One or more of \f[V]webpage\f[R] (skip initial webpage
@@ -2785,12 +2837,6 @@ and use \f[V]generic:impersonate=false\f[R] to disable impersonation
 \f[V]video_types\f[R]: Types of videos to download - one or more of
 \f[V]episodes\f[R], \f[V]movies\f[R], \f[V]clips\f[R],
 \f[V]trailers\f[R]
-.SS niconico
-.IP \[bu] 2
-\f[V]segment_duration\f[R]: Segment duration in milliseconds for HLS-DMC
-formats.
-Use it at your own risk since this feature \f[B]may result in your
-account termination.\f[R]
 .SS youtubewebarchive
 .IP \[bu] 2
 \f[V]check_all\f[R]: Try to check more at the cost of more requests.
@@ -3646,7 +3692,6 @@ animelover1984/youtube-dl (https://github.com/animelover1984/youtube-dl)
 including \f[V]--write-comments\f[R], \f[V]BiliBiliSearch\f[R],
 \f[V]BilibiliChannel\f[R], Embedding thumbnail in mp4/ogg/opus, playlist
 infojson etc.
-Note that NicoNico livestreams are not available.
 See #31 (https://github.com/yt-dlp/yt-dlp/pull/31) for details.
 .IP \[bu] 2
 \f[B]YouTube improvements\f[R]:

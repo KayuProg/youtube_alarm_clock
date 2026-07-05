@@ -1,4 +1,4 @@
-#!/home/kayu/Desktop/youtube_alarm_clock/.venv/bin/python
+#!/home/kayu/Desktop/youtube_alarm_clock/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

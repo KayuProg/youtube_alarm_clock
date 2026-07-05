@@ -222,9 +222,54 @@ def play_music():
         time.sleep(1)
     # audio_play(url)
 
+
+import os
+import random
+
+def get_random_mp3(path):
+    """
+    path: audiosフォルダのパス
+    return: ランダムなmp3ファイル名（拡張子付き）
+    """
+    mp3_files = [
+        f for f in os.listdir(path)
+        if os.path.isfile(os.path.join(path, f)) and f.lower().endswith(".mp3")
+    ]
+
+    if not mp3_files:
+        raise FileNotFoundError("mp3ファイルが見つかりません。")
+    # print(random.choice(mp3_files))
+
+    return random.choice(mp3_files)
+
+
+
+def play_music_temporal():
+    # url=get_random_mp3("./audio/alarms/")
+    # print(f"C:/Users/katayama/Desktop/Programming/Python/projects/youtube_alarm_clock/audio/alarms/{url}")
+
+    # os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo ./audio/alarms/{url}")
+
+    while 1:
+        url=get_random_mp3("./audio/alarms/")
+        with open("timer_flag.txt", "r", encoding="utf-8") as file:
+            timer_flag = file.readline().strip()
+        if timer_flag=="1":
+            os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}")
+            # os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo C:/Users/katayama/Desktop/Programming/Python/projects/youtube_alarm_clock/audio/alarms/{url}")
+        elif timer_flag=="0":
+            sys.exit()
+            break
+        
+        time.sleep(1)
+    # audio_play(url)
+    
+    
+    return 0
     
 
 if __name__ == "__main__":
     # urls=get_urls()    
-    play_music()
-
+    # play_music()
+    play_music_temporal()
+    # get_random_mp3("./audio/alarms/")

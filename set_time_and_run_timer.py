@@ -2,7 +2,7 @@ import TkEasyGUI as sg
 import datetime
 import time
 import threading
-import play_music
+from play_music import play_music, play_music_temporal
 import sys
 import os
 
@@ -39,7 +39,8 @@ def timer():
             #     file.write(str(0))
             #     file.truncate()  # 余計な部分を削除
             
-            play_music.play_music()
+            # play_music()
+            play_music_temporal()
         else:
             print("まだ寝てていいよ")
             #play_music.play_music()
@@ -165,6 +166,7 @@ def set_awake_time():
             # break
         
         if event == "Stop":
+            #timer_flagをの内容を"0"に書き換える．timerを停止する．
             with open("timer_flag.txt", "r+", encoding="utf-8") as file:
                     file.seek(0)
                     file.write("0")

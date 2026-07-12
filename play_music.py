@@ -238,7 +238,7 @@ def get_random_mp3(path):
 
     if not mp3_files:
         raise FileNotFoundError("mp3ファイルが見つかりません。")
-    print(random.choice(mp3_files))
+    # print(random.choice(mp3_files))
 
     return random.choice(mp3_files)
 
@@ -252,8 +252,11 @@ def play_music_temporal():
 
     while 1:
         url=get_random_mp3("./audio/alarms/")
+        print(f"{url}を流します．")
         with open("timer_flag.txt", "r", encoding="utf-8") as file:
             timer_flag = file.readline().strip()
+        print(f"timer_flag is {timer_flag}")
+        
         if timer_flag=="1":
             os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}")
             # os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo C:/Users/katayama/Desktop/Programming/Python/projects/youtube_alarm_clock/audio/alarms/{url}")

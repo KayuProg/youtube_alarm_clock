@@ -32,6 +32,7 @@ def timer():
         print("now is ",now," ref is ",ref_converted)
         #########################
         #Test用にアラームを流す．
+        print("テストでアラームを流します")
         play_music_temporal()
         #########################
         if ref_converted<now:

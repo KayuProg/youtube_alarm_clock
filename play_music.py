@@ -238,7 +238,7 @@ def get_random_mp3(path):
 
     if not mp3_files:
         raise FileNotFoundError("mp3ファイルが見つかりません。")
-    # print(random.choice(mp3_files))
+    print(random.choice(mp3_files))
 
     return random.choice(mp3_files)
 
@@ -271,5 +271,5 @@ def play_music_temporal():
 if __name__ == "__main__":
     # urls=get_urls()    
     # play_music()
-    play_music_temporal()
-    # get_random_mp3("./audio/alarms/")
+    # play_music_temporal()
+    get_random_mp3("./audio/alarms/")

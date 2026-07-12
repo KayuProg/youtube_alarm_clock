@@ -30,6 +30,10 @@ def timer():
             ref = file.readline().strip()  # 一行目を取得して前後の空白や改行を削除
         ref_converted=datetime.datetime.strptime(ref,"%Y-%m-%d %H:%M:%S")
         print("now is ",now," ref is ",ref_converted)
+        #########################
+        #Test用にアラームを流す．
+        play_music_temporal()
+        #########################
         if ref_converted<now:
             print("アラームを流します")
             

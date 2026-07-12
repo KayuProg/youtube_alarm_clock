@@ -258,7 +258,19 @@ def play_music_temporal():
         # print(f"timer_flag is {timer_flag}")
         
         if timer_flag=="1":
-            os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}")
+            # os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}")
+            import subprocess  # ファイルの上のほうになければ追加してください
+
+            # os.system の代わりに以下に書き換え
+            cmd = [
+                "/usr/bin/mplayer",
+                "-volume",
+                "55",
+                "-af",
+                "scaletempo",
+                f"/home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}",
+            ]
+            subprocess.run(cmd)
             print(f"/usr/bin/mplayer -volume 55 -af scaletempo /home/kayu/Desktop/youtube_alarm_clock/audio/alarms/{url}")
             # os.system(f"/usr/bin/mplayer -volume 55 -af scaletempo C:/Users/katayama/Desktop/Programming/Python/projects/youtube_alarm_clock/audio/alarms/{url}")
         elif timer_flag=="0":
